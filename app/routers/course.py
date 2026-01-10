@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 
 from ..models.models import Course
 from ..schemas.course import CourseBaseSchema, CreateCourseSchema, UpdateCourseSchema
-from ..dependencies import get_session
+from ..dependencies import get_session, current_user_dependency, teacher_role_dependency
 
 router = APIRouter(
     prefix="/courses",
@@ -12,7 +12,26 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[CourseBaseSchema])
-async def get_courses(session: Annotated[Session, Depends(get_session)], limit: int = 15, offset: int = 0):
+async def get_courses(
+    session: Annotated[Session, Depends(get_session)], 
+    limit: int = 15, 
+    offset: int = 0, 
+
+    current_user:dict = Depends(current_user_dependency),
+    ):
+    """
+    Retrieve a list of courses with pagination.<br>
+    
+    :param **session**: Database session
+    :type **session**: Annotated[Session, Depends(get_session)]
+    :param **limit**: Number of courses to retrieve
+    :type **limit**: int
+    :param **offset**: Number of courses to skip
+    :type **offset**: int
+
+    **dependencies**: <br>
+    - **current_user**: Get the current authenticated user <br>
+    """
     courses = session.exec(select(Course).offset(offset).limit(limit)).all()
     if not courses:
         raise HTTPException(
@@ -24,8 +43,23 @@ async def get_courses(session: Annotated[Session, Depends(get_session)], limit: 
 @router.post("/create", response_model=CourseBaseSchema)
 async def create_course(
     course: CreateCourseSchema, 
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+
+    current_user:dict = Depends(current_user_dependency),
+    teacher_role:bool = Depends(teacher_role_dependency)
     ):
+    """
+    Create a new course.<br>
+    
+    :param course: Course data to create
+    :type course: CreateCourseSchema
+    :param session: Database session
+    :type session: Annotated[Session, Depends(get_session)]
+
+    **dependencies**: <br>
+    - **current_user**: Get the current authenticated user <br>
+    - **teacher_role**: Ensure the user has teacher or admin role <br>
+    """
     db_course = Course(**course.model_dump(exclude_unset=True))
     session.add(db_course)
     session.commit()
@@ -35,8 +69,22 @@ async def create_course(
 @router.delete("/delete/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_course(
     course_id: int, 
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+
+    current_user:dict = Depends(current_user_dependency),
+    teacher_role:bool = Depends(teacher_role_dependency)
     ):
+    """
+    Delete a course by its ID.<br>
+    :param **course_id**: course ID <br>
+    :type **course_id**: int <br>
+    :param **session**: Database session <br>
+    :type **session**: Annotated[Session, Depends(get_session)] <br>
+
+    **dependencies**: <br>
+    - **current_user**: Get the current authenticated user <br>
+    - **teacher_role**: Ensure the user has teacher or admin role <br>
+    """
     course = session.get(Course, course_id)
     if not course:
         raise HTTPException(
@@ -51,7 +99,10 @@ async def delete_course(
 async def update_course(
     course_id: int, 
     course_update: UpdateCourseSchema, 
-    session: Annotated[Session, Depends(get_session)]
+    session: Annotated[Session, Depends(get_session)],
+
+    current_user:dict = Depends(current_user_dependency),
+    teacher_role:bool = Depends(teacher_role_dependency)
     ):
     """
     Update a course by its ID.<br>
@@ -62,7 +113,10 @@ async def update_course(
     :type **course_update**: UpdateCourseSchema <br>
     :param **session**: Database session <br>
     :type **session**: Annotated[Session, Depends(get_session)] <br>
-    :return: Updated course <br>
+
+    **dependencies**: <br>
+    - **current_user**: Get the current authenticated user <br>
+    - **teacher_role**: Ensure the user has teacher or admin role <br>
     """
     course = session.get(Course, course_id)
     if not course:
