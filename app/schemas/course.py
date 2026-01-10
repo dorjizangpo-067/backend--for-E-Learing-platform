@@ -9,3 +9,9 @@ class CourseBaseSchema(BaseModel):
 
 class CreateCourseSchema(CourseBaseSchema):
     video_id: str
+
+class UpdateCourseSchema(BaseModel):
+    title: str | None = None
+    description: str | None = None
+    video_id: str | None = None
+    category_id: int | None = None
