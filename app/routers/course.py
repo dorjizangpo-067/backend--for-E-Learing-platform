@@ -12,8 +12,8 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[CourseBaseSchema])
-async def get_courses(session: Annotated[Session, Depends(get_session)]):
-    courses = session.exec(select(Course)).all()
+async def get_courses(session: Annotated[Session, Depends(get_session)], limit: int = 15, offset: int = 0):
+    courses = session.exec(select(Course).offset(offset).limit(limit)).all()
     if not courses:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, 
