@@ -5,6 +5,7 @@ class Course(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     title: str = Field(index=True)
     description: str
+    video_id: str
 
     category_id: int = Field(foreign_key="category.id")
     author_id: int = Field(foreign_key="user.id")
