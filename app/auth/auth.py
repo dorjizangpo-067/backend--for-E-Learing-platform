@@ -17,10 +17,10 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 @router.post("/register", response_model=UserReadSchema, status_code=status.HTTP_201_CREATED)
 async def register_user(register_data: UserCreateSchema, session: Annotated[Session, Depends(get_session)]):
     """
-    User registration endpoint
+    User registration endpoint <br>
     
-    :param **register_data**: form data containing user registration details
-    :type **session**: database session dependency
+    :param **register_data**: form data containing user registration details <br>
+    :type **session**: database session dependency <br>
     """
     # Copy register_data to modify
     user_form = register_data.model_copy()
@@ -46,10 +46,10 @@ async def register_user(register_data: UserCreateSchema, session: Annotated[Sess
 @router.post("/login", status_code=status.HTTP_200_OK)
 async def login_user(login_data: UserLoginSchema, session: Annotated[Session, Depends(get_session)]):
     """
-    User login endpoint
+    User login endpoint <br>
     
-    :param **login_data**: form data containing user login details
-    :type **session**: database session dependency
+    :param **login_data**: form data containing user login details <br>
+    :type **session**: database session dependency <br>
     """
     creditals_error = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, 
@@ -88,10 +88,10 @@ async def login_user(login_data: UserLoginSchema, session: Annotated[Session, De
 @router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout_user(request: Request):
     """
-    Docstring for logout_user
+    Docstring for logout_user <br>
     
-    :param **request**: FastAPI Request object
-    :type **request**: Request
+    :param **request**: FastAPI Request object <br>
+    :type **request**: Request <br>
     """
     # Make sure user is logged in by checking get_current_user
     response = Response()
