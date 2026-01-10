@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .routers import users, course
+from .routers import users, course, catagory
 from .auth import auth
 from .database import create_db_and_tables
 
@@ -20,6 +20,7 @@ def on_startup():
 
 app.include_router(users.router)
 app.include_router(course.router)
+app.include_router(catagory.router)
 app.include_router(auth.router)
 
 @app.get("/")
