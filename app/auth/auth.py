@@ -49,7 +49,11 @@ async def register_user(register_data: UserCreateSchema, session: Annotated[Sess
 
 # login user
 @router.post("/login", status_code=status.HTTP_200_OK)
-async def login_user(login_data: UserLoginSchema, session: Annotated[Session, Depends(get_session)]):
+async def login_user(
+    login_data: UserLoginSchema,
+    session: Annotated[Session, Depends(get_session)],
+    request: Request
+    ):
     """
     User login endpoint <br>
     
@@ -59,6 +63,13 @@ async def login_user(login_data: UserLoginSchema, session: Annotated[Session, De
     creditals_error = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, 
         detail={"error": "Invalid email or password"}
+        )
+    # check user is already login or not
+    token_user = get_current_user(request=request, secret_key=settings.secret_key, algorithms=settings.algorithm)
+    if token_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Mr/Ms.{token_user.get("name")} had already login"
         )
     statement = select(User).where(User.email == login_data.email)
     user = session.exec(statement).first()
