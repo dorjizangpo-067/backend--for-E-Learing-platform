@@ -1,5 +1,5 @@
 from sqlmodel import create_engine, SQLModel
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .models.models import User, Course, Category
 
@@ -8,9 +8,13 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
+    admin_email: str
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra="allow",
+    )
 
 settings = Settings()
 
