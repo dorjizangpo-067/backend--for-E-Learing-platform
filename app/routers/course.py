@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 
 from ..models.models import Course
 from ..schemas.course import CourseBaseSchema, CreateCourseSchema, UpdateCourseSchema, ReadCourseSchema
-from ..dependencies import get_session, current_user_dependency, teacher_role_dependency
+from ..dependencies import get_session, current_user_dependency, teacher_or_admin_role_dependency, admin_role_dependency
 
 router = APIRouter(
     prefix="/courses",
@@ -17,7 +17,7 @@ async def get_courses(
     limit: int = 15, 
     offset: int = 0, 
 
-    current_user:dict = Depends(current_user_dependency),
+    admin: bool = Depends(admin_role_dependency)
     ):
     """
     Retrieve a list of courses with pagination.<br>
@@ -45,7 +45,7 @@ async def create_course(
     course: CreateCourseSchema, 
     session: Annotated[Session, Depends(get_session)],
 
-    teacher_role:bool = Depends(teacher_role_dependency),
+    teacher_or_admin_role:bool = Depends(teacher_or_admin_role_dependency),
     current_user:dict = Depends(current_user_dependency)
     ):
     """
@@ -74,7 +74,7 @@ async def delete_course(
     course_id: int, 
     session: Annotated[Session, Depends(get_session)],
 
-    teacher_role:bool = Depends(teacher_role_dependency),
+    teacher_role:bool = Depends(teacher_or_admin_role_dependency),
     current_user:dict = Depends(current_user_dependency)
     ):
     """
@@ -109,7 +109,7 @@ async def update_course(
     course_update: UpdateCourseSchema, 
     session: Annotated[Session, Depends(get_session)],
 
-    teacher_role:bool = Depends(teacher_role_dependency),
+    teacher_role:bool = Depends(teacher_or_admin_role_dependency),
     current_user:dict = Depends(current_user_dependency)
     ):
     """

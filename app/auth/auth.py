@@ -25,6 +25,11 @@ async def register_user(register_data: UserCreateSchema, session: Annotated[Sess
     # Copy register_data to modify
     user_form = register_data.model_copy()
 
+    if user_form.role == "admin" and user_form.email != settings.admin_email:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not Admin"
+        )
     # password hashing
     hash_password = func_hash_password(register_data.password)
     user_form.password = hash_password

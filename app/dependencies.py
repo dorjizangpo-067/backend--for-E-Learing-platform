@@ -1,6 +1,6 @@
 import jwt
 from fastapi import Request, Depends, HTTPException, status
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlmodel import Session
 from typing import Annotated
 
@@ -12,9 +12,14 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
+    admin_email: str
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra="allow",
+    )
+        
 
 def get_session():
     with Session(engine) as session:
@@ -62,8 +67,16 @@ async def current_user_role(current_user: Annotated[dict, Depends(current_user_d
     print("current user role:"+role)
     return role
 
-async def teacher_role_dependency(current_role: Annotated[str, Depends(current_user_role)]):
+async def teacher_or_admin_role_dependency(current_role: Annotated[str, Depends(current_user_role)]):
     if current_role not in ["teacher", "admin"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Operation not permitted"
+        )
+    return True
+
+async def admin_role_dependency(current_role: Annotated[str, Depends(current_user_role)]):
+    if current_role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Operation not permitted"
