@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 from ..models.models import Course
-from ..schemas.course import CourseBaseSchema, CreateCourseSchema, UpdateCourseSchema
+from ..schemas.course import CourseBaseSchema, CreateCourseSchema, UpdateCourseSchema, ReadCourseSchema
 from ..dependencies import get_session, current_user_dependency, teacher_role_dependency
 
 router = APIRouter(
@@ -11,7 +11,7 @@ router = APIRouter(
     tags=["courses"]
 )
 
-@router.get("/", response_model=list[CourseBaseSchema])
+@router.get("/", response_model=list[ReadCourseSchema])
 async def get_courses(
     session: Annotated[Session, Depends(get_session)], 
     limit: int = 15, 
@@ -45,8 +45,8 @@ async def create_course(
     course: CreateCourseSchema, 
     session: Annotated[Session, Depends(get_session)],
 
-    current_user:dict = Depends(current_user_dependency),
-    teacher_role:bool = Depends(teacher_role_dependency)
+    teacher_role:bool = Depends(teacher_role_dependency),
+    current_user:dict = Depends(current_user_dependency)
     ):
     """
     Create a new course.<br>
@@ -60,7 +60,10 @@ async def create_course(
     - **current_user**: Get the current authenticated user <br>
     - **teacher_role**: Ensure the user has teacher or admin role <br>
     """
-    db_course = Course(**course.model_dump(exclude_unset=True))
+    course_with_author_id = course.model_dump(exclude_unset=True)
+    course_with_author_id.update({"author_id": int(current_user.get("id"))})
+    print("course_with_author_id", course_with_author_id)
+    db_course = Course(**course_with_author_id)
     session.add(db_course)
     session.commit()
     session.refresh(db_course)
@@ -71,8 +74,8 @@ async def delete_course(
     course_id: int, 
     session: Annotated[Session, Depends(get_session)],
 
-    current_user:dict = Depends(current_user_dependency),
-    teacher_role:bool = Depends(teacher_role_dependency)
+    teacher_role:bool = Depends(teacher_role_dependency),
+    current_user:dict = Depends(current_user_dependency)
     ):
     """
     Delete a course by its ID.<br>
@@ -91,6 +94,11 @@ async def delete_course(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Course not found"
             )
+    if course.author_id != current_user.get("id"):
+        raise HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail="You are Not Creator of this course!"
+            )
     session.delete(course)
     session.commit()
     return {"detail": "Course deleted successfully"}
@@ -101,8 +109,8 @@ async def update_course(
     course_update: UpdateCourseSchema, 
     session: Annotated[Session, Depends(get_session)],
 
-    current_user:dict = Depends(current_user_dependency),
-    teacher_role:bool = Depends(teacher_role_dependency)
+    teacher_role:bool = Depends(teacher_role_dependency),
+    current_user:dict = Depends(current_user_dependency)
     ):
     """
     Update a course by its ID.<br>
@@ -124,6 +132,11 @@ async def update_course(
             status_code=status.HTTP_404_NOT_FOUND, 
             detail="Course not found"
             )
+    if course.author_id != current_user.get("id"):
+        raise HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail="You are Not Creator of this course!"
+        )
     course_data = course_update.model_dump(exclude_unset=True)
     course.sqlmodel_update(course_data)
     session.add(course)

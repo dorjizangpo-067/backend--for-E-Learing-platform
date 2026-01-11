@@ -63,7 +63,7 @@ async def current_user_role(current_user: Annotated[dict, Depends(current_user_d
     return role
 
 async def teacher_role_dependency(current_role: Annotated[str, Depends(current_user_role)]):
-    if current_role != "teacher":
+    if current_role not in ["teacher", "admin"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Operation not permitted"
