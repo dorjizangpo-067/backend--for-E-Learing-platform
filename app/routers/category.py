@@ -4,7 +4,7 @@ from typing import Annotated
 
 from ..models.models import Category
 from ..dependencies import get_session, admin_role_dependency
-from ..schemas.catagory import CategoryBaseSchema
+from ..schemas.category import CategoryBaseSchema
 
 router = APIRouter(
     prefix="/categories", 
