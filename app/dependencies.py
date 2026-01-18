@@ -1,24 +1,12 @@
 import jwt
 from fastapi import Request, Depends, HTTPException, status
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlmodel import Session
 from typing import Annotated
 
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError, InvalidSignatureError
 from .database import engine
+from .env_loader import settings
 
-class Settings(BaseSettings):
-    sqlite_url: str
-    secret_key: str
-    algorithm: str
-    access_token_expire_minutes: int
-    admin_email: str
-
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        case_sensitive=False,
-        extra="allow",
-    )
         
 
 def get_session():
@@ -51,7 +39,6 @@ def get_current_user(request: Request, secret_key: str, algorithms: list[str]) -
     return payload
 
 async def current_user_dependency(request: Request) -> dict | None:
-    settings = Settings()
     user = get_current_user(request, settings.secret_key, [settings.algorithm])
     if user is None:
         print("Current User:", user)

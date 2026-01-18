@@ -7,11 +7,12 @@ from sqlalchemy.exc import IntegrityError
 
 from .utilits import create_access_token, hash_password as func_hash_password, verify_password
 from ..schemas.user import UserCreateSchema, UserReadSchema, UserLoginSchema
-from ..dependencies import get_session, Settings, get_current_user, current_user_dependency
+from ..dependencies import get_session, get_current_user, current_user_dependency
 from ..models.models import User
 from ..limiter import limiter
+from ..env_loader import settings
 
-settings = Settings()
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 # reginster user
