@@ -2,7 +2,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Request
 from sqlmodel import Session, select
 
-from ..models.models import Course, Category
+from ..models.categories import Category
+from ..models.courses import Course
 from ..schemas.course import CourseBaseSchema, CreateCourseSchema, UpdateCourseSchema, ReadCourseSchema
 from ..dependencies import get_session, current_user_dependency, is_teacher_or_admin, is_admin
 from ..limiter import limiter

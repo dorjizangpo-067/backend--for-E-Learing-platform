@@ -62,7 +62,7 @@ async def is_teacher_or_admin(current_role: Annotated[str, Depends(current_user_
         )
     return True
 
-async def is_admin(current_role: Annotated[str, Depends(current_user_role)]):
+async def is_admin(current_role: Annotated[str, Depends(current_user_role)] = current_user_role):
     if current_role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

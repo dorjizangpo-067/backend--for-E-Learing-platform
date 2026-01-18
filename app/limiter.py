@@ -17,10 +17,9 @@ async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
     )
 
 def get_smart_key(request: Request):
-    user = getattr(request.state, "user", None)
-
+    user:dict = getattr(request.state, "user", None)
     if user:
-        return f"user_{user.id}"
+        return f"user_{user.get(id)}"
 
     return get_remote_address(request)
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from sqlmodel import Session, select
 from typing import Annotated
 
-from ..models.models import Category
+from ..models.categories import Category
 from ..dependencies import get_session, is_admin
 from ..schemas.category import CategoryBaseSchema
 from ..limiter import limiter
