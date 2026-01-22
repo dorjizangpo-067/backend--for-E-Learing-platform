@@ -15,8 +15,8 @@ router = APIRouter(
 
 
 @router.get("/", response_model=list[ReadCourseSchema])
-@limiter.limit("5/second", exempt_when=is_admin)   # Allows a quick 'burst' of 5 clicks
-@limiter.limit("100/hour", exempt_when=is_admin)   # But stops long-term heavy usage
+@limiter.limit("5/second", exempt_when=is_admin)   # type: ignore # Allows a quick 'burst' of 5 clicks
+@limiter.limit("100/hour", exempt_when=is_admin)   # type: ignore # But stops long-term heavy usage
 async def get_courses(
     request: Request, # for Limiter to perform
     session: Annotated[Session, Depends(get_session)], 
@@ -30,8 +30,8 @@ async def get_courses(
 
 
 @router.post("/create", response_model=CourseBaseSchema, status_code=status.HTTP_201_CREATED)
-@limiter.limit("5/second", exempt_when=is_admin)
-@limiter.limit("100/hour", exempt_when=is_admin)  
+@limiter.limit("5/second", exempt_when=is_admin)  # type: ignore
+@limiter.limit("100/hour", exempt_when=is_admin)  # type: ignore
 async def create_course(
     request: Request,
     course_in: CreateCourseSchema, 
@@ -41,7 +41,6 @@ async def create_course(
 ):
     """Create a new course and assign it to the current user."""
     
-    # Use a single query to find the specific category
     category = session.exec(
         select(Category).where(Category.name == course_in.category)
     ).first()
@@ -71,7 +70,7 @@ async def create_course(
 
 
 @router.delete("/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
-@limiter.limit("2/minute", exempt_when=is_admin)
+@limiter.limit("2/minute", exempt_when=is_admin) # type: ignore
 async def delete_course(
     request: Request,
     course_id: int, 
