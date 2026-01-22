@@ -1,13 +1,22 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
 from .routers import category, users, course
 from .auth import auth
-from .database import create_db_and_tables
+from .database import create_db_and_tables, engine
 from .limiter import limiter, custom_rate_limit_handler
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield  # App runs here
+    engine.dispose()
+
 app = FastAPI(
+    lifespan=lifespan,
     title="E-Learning Platform API",
     description="API for managing courses, users, and content in an e-learning platform.",
     version="1.0.0",
@@ -18,12 +27,9 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
+app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler) # type: ignore
 app.add_middleware(SlowAPIMiddleware)
 
-@app.on_event("startup") 
-def on_startup(): 
-    create_db_and_tables()
 
 app.include_router(users.router)
 app.include_router(course.router)
