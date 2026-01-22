@@ -25,4 +25,5 @@ dependencies = [
     "email-validator",    # For validating student emails
     "jinja2",             # Only keep if you serve HTML templates
     "httpx",              # Only keep if your backend calls other APIs
+    "pwdlib[argon2]>=0.3.0",
 ]
