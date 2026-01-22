@@ -1,0 +1,28 @@
+[project]
+name = "e-learning"
+version = "0.1.0"
+description = "Bhutan E-Learning Platform Backend"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    # --- Core Framework ---
+    "fastapi",
+    "uvicorn[standard]",
+    "gunicorn",            # Critical for Production (added this for you)
+    # --- Database ---
+    "sqlalchemy",
+    "sqlmodel",            # You listed this, so I assume you use it
+    "psycopg2",            # PostgreSQL driver (Critical for Prod)
+    # --- Security & Auth ---
+    "python-multipart",    # For login forms / file uploads
+    "pyjwt",              # For Token generation
+    "argon2-cffi",        # For Password Hashing (You had this, keep it!)
+    "pydantic-settings",  # For managing .env files
+    # --- Tools ---
+    "python-dotenv",      # Loading .env
+    "sentry-sdk",         # Error Monitoring (Excellent that you have this)
+    "slowapi",            # Rate Limiting (Crucial for your Bhutan context)
+    "email-validator",    # For validating student emails
+    "jinja2",             # Only keep if you serve HTML templates
+    "httpx",              # Only keep if your backend calls other APIs
+]
