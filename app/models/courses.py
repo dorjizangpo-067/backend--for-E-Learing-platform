@@ -13,8 +13,8 @@ class Course(SQLModel, table=True):
     description: str
     video_id: str
 
-    category_id: int = Field(foreign_key="category.id")
-    author_id: int = Field(foreign_key="user.id")
+    category_id: int | None = Field(foreign_key="category.id")
+    author_id: int | None= Field(foreign_key="user.id")
 
     author: "User" = Relationship(
         sa_relationship=relationship("User", back_populates="courses")
