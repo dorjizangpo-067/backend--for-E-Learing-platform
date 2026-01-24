@@ -22,6 +22,7 @@ async def create_category(
     session: Annotated[Session, Depends(get_session)],
     _ = Depends(is_admin)
     ):
+    """  Add category by admin  """
     db_category = Category(**category.model_dump(exclude_unset=True))
     session.add(db_category)
     session.commit()
