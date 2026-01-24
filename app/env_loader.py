@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    sqlite_url: str
+    postgresql_url: str
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
@@ -13,4 +13,4 @@ class Settings(BaseSettings):
         extra="allow",
     )
 
-settings = Settings()
+settings = Settings() #type: ignore
