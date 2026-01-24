@@ -50,7 +50,7 @@ async def current_user_dependency(request: Request) -> dict | None:
     return user
 
 # get current_user_role
-async def current_user_role(current_user: Annotated[dict, Depends(current_user_dependency)]) -> str:
+async def current_user_role(current_user: Annotated[dict, Depends(current_user_dependency)]) -> str | None:
     role = current_user.get("role")
     return role
 
@@ -62,7 +62,7 @@ async def is_teacher_or_admin(current_role: Annotated[str, Depends(current_user_
         )
     return True
 
-async def is_admin(current_role: Annotated[str, Depends(current_user_role)] = current_user_role):
+async def is_admin(current_role: Annotated[str, Depends(current_user_role)]):
     if current_role != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

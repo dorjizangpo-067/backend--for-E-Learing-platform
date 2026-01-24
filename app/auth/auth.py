@@ -74,7 +74,7 @@ async def login_user(
         detail={"error": "Invalid email or password"}
         )
     # check user is already login or not
-    token_user = get_current_user(request=request, secret_key=settings.secret_key, algorithms=settings.algorithm)
+    token_user = get_current_user(request=request, secret_key=settings.secret_key, algorithms=[settings.algorithm])
     if token_user is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
