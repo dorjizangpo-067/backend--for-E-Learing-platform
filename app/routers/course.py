@@ -26,7 +26,7 @@ async def get_courses(
     ):
     """Retrieve a list of courses with pagination."""
     courses = session.exec(select(Course).offset(offset).limit(limit)).all()
-    return courses
+    return {"courses": courses}
 
 
 @router.post("/create", response_model=CourseBaseSchema, status_code=status.HTTP_201_CREATED)
@@ -66,7 +66,7 @@ async def create_course(
     session.add(db_course)
     session.commit()
     session.refresh(db_course)
-    return db_course
+    return {"courses": db_course}
 
 
 @router.delete("/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -132,4 +132,4 @@ async def update_course(
     session.add(course)
     session.commit()
     session.refresh(course)
-    return course
+    return {"course": course}
