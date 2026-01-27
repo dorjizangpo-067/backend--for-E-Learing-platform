@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.post("/create", response_model=CategoryBaseSchema)
 @limiter.limit("10/minute")
-async def create_category(
+def create_category(
     request: Request,
     category: CategoryBaseSchema,
 

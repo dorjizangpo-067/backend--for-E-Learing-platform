@@ -9,6 +9,6 @@ router = APIRouter(
 
 @router.get("/")
 @limiter.limit("10/minute")
-async def get_users(request: Request):
+def get_users(request: Request):
     """  get all users  """
     return {"message": "List of users"}
