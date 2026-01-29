@@ -7,10 +7,7 @@ from ..dependencies import get_session, is_admin
 from ..schemas.category import CategoryBaseSchema
 from ..limiter import limiter
 
-router = APIRouter(
-    prefix="/categories", 
-    tags=["categories"]
-    )
+router = APIRouter(prefix="/categories", tags=["categories"])
 
 
 @router.post("/create", response_model=CategoryBaseSchema)
@@ -18,11 +15,10 @@ router = APIRouter(
 def create_category(
     request: Request,
     category: CategoryBaseSchema,
-
     session: Annotated[Session, Depends(get_session)],
-    _ = Depends(is_admin)
-    ):
-    """  Add category by admin  """
+    _=Depends(is_admin),
+):
+    """Add category by admin"""
     db_category = Category(**category.model_dump(exclude_unset=True))
     session.add(db_category)
     session.commit()

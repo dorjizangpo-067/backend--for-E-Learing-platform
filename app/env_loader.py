@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     postgresql_url: str
     secret_key: str
@@ -13,4 +14,5 @@ class Settings(BaseSettings):
         extra="allow",
     )
 
-settings = Settings() #type: ignore
+
+settings = Settings()  # type: ignore

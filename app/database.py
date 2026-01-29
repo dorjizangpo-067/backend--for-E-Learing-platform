@@ -7,5 +7,6 @@ from .env_loader import settings
 
 engine = create_engine(settings.postgresql_url)
 
+
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)

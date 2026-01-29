@@ -16,19 +16,17 @@ async def lifespan(app: FastAPI):
     yield  # App runs here
     engine.dispose()
 
+
 app = FastAPI(
     lifespan=lifespan,
     title="E-Learning Platform API",
     description="API for managing courses, users, and content in an e-learning platform.",
     version="1.0.0",
-    contact={
-        "name": "E-Learning Support",
-        "email": "dorjizangpo75@gmail.com"
-    }
+    contact={"name": "E-Learning Support", "email": "dorjizangpo75@gmail.com"},
 )
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler) # type: ignore
+app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)  # type: ignore
 app.add_middleware(SlowAPIMiddleware)
 app.add_middleware(
     CORSMiddleware,

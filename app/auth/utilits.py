@@ -5,15 +5,20 @@ from datetime import datetime, timezone, timedelta
 
 hashed_hasdher = PasswordHash.recommended()
 
+
 def hash_password(plain_password: str) -> str:
     """hash plain password"""
     return hashed_hasdher.hash(plain_password)
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """verify plain password with hashed password"""
     return hashed_hasdher.verify(plain_password, hashed_password)
 
-def create_access_token(data: dict, secret_key: str, algorithm: str, expires_delta: timedelta | None = None) -> str:
+
+def create_access_token(
+    data: dict, secret_key: str, algorithm: str, expires_delta: timedelta | None = None
+) -> str:
     """Create a JWT access token."""
     to_encode = data.copy()
     if expires_delta:

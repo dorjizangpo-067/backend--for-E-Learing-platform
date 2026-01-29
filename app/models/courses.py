@@ -1,4 +1,4 @@
-from __future__ import annotations  
+from __future__ import annotations
 from sqlmodel import SQLModel, Field, Relationship
 from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship
@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from .categories import Category
     from .users import User
 
+
 class Course(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     title: str = Field(index=True)
@@ -14,7 +15,7 @@ class Course(SQLModel, table=True):
     video_id: str
 
     category_id: int | None = Field(foreign_key="category.id")
-    author_id: int | None= Field(foreign_key="user.id")
+    author_id: int | None = Field(foreign_key="user.id")
 
     author: "User" = Relationship(
         sa_relationship=relationship("User", back_populates="courses")
