@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Request
-from sqlmodel import Session, select
+from sqlmodel import Session
 from typing import Annotated
 
 from ..models.categories import Category

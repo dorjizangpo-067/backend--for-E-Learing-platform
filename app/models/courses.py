@@ -1,6 +1,6 @@
 from __future__ import annotations  
 from sqlmodel import SQLModel, Field, Relationship
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from sqlalchemy.orm import relationship
 
 if TYPE_CHECKING:
