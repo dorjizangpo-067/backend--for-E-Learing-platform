@@ -47,7 +47,7 @@ def create_course(
     course_in: CreateCourseSchema,
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[dict, Depends(current_user_dependency)],
-    _=Annotated[bool, Depends(is_teacher_or_admin)],
+    is_authorized: bool = Depends(is_teacher_or_admin),
 ):
     """Create a new course and assign it to the current user."""
 

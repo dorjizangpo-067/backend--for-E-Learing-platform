@@ -26,7 +26,14 @@ dependencies = [
     "jinja2",             # Only keep if you serve HTML templates
     "httpx",              # Only keep if your backend calls other APIs
     "pwdlib[argon2]>=0.3.0",
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
 ]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
 lint.extend-select = ["FAST", "ASYNC", "T20", "AIR", "I", "Q"]
