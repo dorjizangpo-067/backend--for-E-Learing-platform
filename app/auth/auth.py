@@ -62,7 +62,7 @@ async def register_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={"error": "User with this email already exists."},
         )
-    return {"user": user}
+    return user
 
 
 # login user

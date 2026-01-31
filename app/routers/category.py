@@ -17,11 +17,11 @@ def create_category(
     request: Request,
     category: CategoryBaseSchema,
     session: Annotated[Session, Depends(get_session)],
-    _=Depends(is_admin),
+    _=Depends(is_admin),  # noqa: ANN001
 ):
     """Add category by admin"""
     db_category = Category(**category.model_dump(exclude_unset=True))
     session.add(db_category)
     session.commit()
     session.refresh(db_category)
-    return {"category": db_category}
+    return db_category
