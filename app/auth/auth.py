@@ -72,7 +72,7 @@ async def login_user(
     request: Request,
     login_data: UserLoginSchema,
     session: Annotated[Session, Depends(get_session)],
-) -> User:
+) -> JSONResponse:
     """
     User login endpoint <br>
 

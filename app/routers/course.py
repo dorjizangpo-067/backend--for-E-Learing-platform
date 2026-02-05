@@ -1,7 +1,6 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
-from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
 from ..dependencies import (
@@ -24,15 +23,15 @@ router = APIRouter(prefix="/courses", tags=["courses"])
 
 
 @router.get("/", response_model=dict[str, list[ReadCourseSchema]])
-@limiter.limit("5/second")  # Allows a quick 'burst' of 5 clicks
-@limiter.limit("100/hour")  # But stops long-term heavy usage
+@limiter.limit("5/second")
+@limiter.limit("100/hour")
 def get_courses(
     request: Request,  # for Limiter to perform
     session: Annotated[Session, Depends(get_session)],
     limit: Annotated[int, Query(le=25)] = 15,
     offset: int = 0,
-    _=Depends(is_admin),  # noqa: ANN001
-) -> JSONResponse:
+    is_authorized: bool = Depends(is_admin),
+) -> dict:
     """Retrieve a list of courses with pagination."""
     courses = session.exec(select(Course).offset(offset).limit(limit)).all()
     return {"courses": courses}
@@ -41,15 +40,15 @@ def get_courses(
 @router.post(
     "/", response_model=dict[str, CourseBaseSchema], status_code=status.HTTP_201_CREATED
 )
-@limiter.limit("5/second")  # type: ignore
-@limiter.limit("100/hour")  # type: ignore
+@limiter.limit("3/second")
+@limiter.limit("100/hour")
 def create_course(
     request: Request,
     course_in: CreateCourseSchema,
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[dict, Depends(current_user_dependency)],
     is_authorized: bool = Depends(is_teacher_or_admin),
-) -> JSONResponse:
+) -> dict:
     """Create a new course and assign it to the current user."""
 
     category = session.exec(
@@ -79,14 +78,14 @@ def create_course(
 
 
 @router.delete("/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
-@limiter.limit("2/minute")  # type: ignore
+@limiter.limit("2/minute")
 def delete_course(
     request: Request,
     course_id: int,
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[dict, Depends(current_user_dependency)],
-    _=Depends(is_teacher_or_admin),  # noqa: ANN001
-) -> JSONResponse:
+    is_authorized: bool = Depends(is_teacher_or_admin),
+) -> None:
     """Delete a course by its ID"""
     course = session.get(Course, course_id)
 
@@ -104,7 +103,7 @@ def delete_course(
 
     session.delete(course)
     session.commit()
-    return {"detail": "Course deleted successfully"}
+    return
 
 
 @router.patch("/{course_id}", response_model=dict[str, CourseBaseSchema])
@@ -115,8 +114,8 @@ def update_course(
     course_update: UpdateCourseSchema,
     session: Annotated[Session, Depends(get_session)],
     current_user: Annotated[dict, Depends(current_user_dependency)],
-    _=Depends(is_teacher_or_admin),  # noqa: ANN001
-) -> JSONResponse:
+    is_authorized: bool = Depends(is_teacher_or_admin),
+) -> dict:
     """Update a course by its ID."""
     course = session.get(Course, course_id)
 

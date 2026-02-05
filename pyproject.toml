@@ -15,6 +15,7 @@ dependencies = [
     "python-dotenv",
     "slowapi>=0.1.9",
     "pwdlib>=0.3.0",
+    "pytest>=9.0.2",
 ]
 optional-dependencies = { 
     dev = [

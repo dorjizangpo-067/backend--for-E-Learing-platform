@@ -11,10 +11,10 @@ from .limiter import custom_rate_limit_handler, limiter
 from .routers import category, course, users
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> None:
+@asynccontextmanager  # type: ignore
+async def lifespan(app: FastAPI) -> None:  # type: ignore
     create_db_and_tables()
-    yield  # App runs here
+    yield  # type: ignore # App runs here
     engine.dispose()
 
 

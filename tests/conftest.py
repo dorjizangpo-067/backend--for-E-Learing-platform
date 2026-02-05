@@ -11,17 +11,17 @@ from app.main import app
 
 # Use in-memory SQLite database for testing
 @pytest.fixture(name="session")
-def session_fixture() -> Session:
+def session_fixture() -> Session:  # type: ignore
     engine = create_engine(
         "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
-        yield session
+        yield session  # type: ignore
 
 
 @pytest.fixture(name="client")
-async def client_fixture(session: Session) -> AsyncClient:
+async def client_fixture(session: Session) -> AsyncClient:  # type: ignore
     def get_session_override() -> Session:
         return session
 
@@ -30,6 +30,6 @@ async def client_fixture(session: Session) -> AsyncClient:
     # Create AsyncClient using ASGITransport
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        yield client
+        yield client  # type: ignore
 
     app.dependency_overrides.clear()
