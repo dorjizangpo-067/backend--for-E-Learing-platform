@@ -13,6 +13,8 @@ dependencies = [
     "argon2-cffi",
     "pydantic-settings",
     "python-dotenv",
+    "slowapi>=0.1.9",
+    "pwdlib>=0.3.0",
 ]
 optional-dependencies = { 
     dev = [
