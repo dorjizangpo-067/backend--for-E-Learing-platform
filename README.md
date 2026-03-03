@@ -55,6 +55,12 @@ admin_email=admin@example.com
 
 ### Development Server
 
+Run the migration(alembic) to database:
+
+```bash
+alembic upgrade head
+```
+
 Run the application with auto-reload enabled:
 
 ```bash
@@ -105,4 +111,5 @@ e-backend/
 3. Commit your changes.
 4. Push to the branch.
 5. Open a Pull Request.
+
 
