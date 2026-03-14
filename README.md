@@ -18,7 +18,8 @@ A high-performance backend service built with **FastAPI** + **async**, designed 
 - **[Pydantic](https://docs.pydantic.dev/latest/)**: Data Validation
 - **[Docker](https://www.docker.com/)**: Containerise Project (comming soon)
 - **[Git](https://git-scm.com/)**: Code version Control
-- **[VS Code](https://code.visualstudio.com/)**: Conde Editor
+- **[VS Code](https://code.visualstudio.com/)**: Conde Editor(Before)
+- **[NeoVim](https://neovim.io/)**: Conde Editor(Shift)
 
 ## ⚡ Installation
 
@@ -26,19 +27,19 @@ This project uses `uv` for dependency management.
 
 1. **Clone the repository**:
 
-    ```bash
-    git clone https://github.com/dorjizangpo-067/e-backend.git
-    cd e-backend
-    ```
+   ```bash
+   git clone https://github.com/dorjizangpo-067/e-backend.git
+   cd e-backend
+   ```
 
 2. **Install dependencies**:
 
-    ```bash
-    uv sync
-    ```
+   ```bash
+   uv sync
+   ```
 
-    This will automatically create a virtual environment (`.venv`) and install all required packages.
-   
+   This will automatically create a virtual environment (`.venv`) and install all required packages.
+
 ## 🔐 Environment Variables
 
 Create a `.env` file in the root directory:
@@ -67,7 +68,7 @@ Run the application with auto-reload enabled:
 uv run fastapi dev app/main.py
 ```
 
-The API will be available at: `http://127.0.0.1:8000`  
+The API will be available at: `http://127.0.0.1:8000`
 Documentation (Swagger UI): `http://127.0.0.1:8000/docs`
 
 ## 🧪 Running Tests
@@ -77,8 +78,6 @@ Run the test suite with `pytest`:
 ```bash
 uv run pytest
 ```
-
-
 
 ## 📂 Project Structure
 
@@ -100,6 +99,8 @@ e-backend/
 │   └── env_loader.py   # Settings loading
 ├── tests/              # Pytest modules
 ├── .env                # Environment variables (git-ignored)
+├── .python-version     # python version
+├── alembic.ini         # Alembic config
 ├── pyproject.toml      # Project configuration & dependencies
 └── uv.lock             # Locked dependency versions
 ```
@@ -111,5 +112,4 @@ e-backend/
 3. Commit your changes.
 4. Push to the branch.
 5. Open a Pull Request.
-
 
