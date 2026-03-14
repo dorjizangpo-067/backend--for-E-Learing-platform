@@ -335,6 +335,7 @@ dependencies = [
     { name = "argon2-cffi" },
     { name = "asyncpg" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "fastapi-pagination", extra = ["sqlalchemy"] },
     { name = "httpx" },
     { name = "psycopg2" },
     { name = "pwdlib" },
@@ -365,6 +366,7 @@ requires-dist = [
     { name = "argon2-cffi" },
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "fastapi", extras = ["standard"] },
+    { name = "fastapi-pagination", extras = ["sqlalchemy"], specifier = ">=0.15.10" },
     { name = "gunicorn", marker = "extra == 'prod'" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "psycopg2", specifier = ">=2.9.11" },
@@ -460,6 +462,26 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/11/15/6c3d85d63964340fde6f36cc80f3f365d35f371e6a918d68ff3a3d588ef2/fastapi_cloud_cli-0.11.0.tar.gz", hash = "sha256:ecc83a5db106be35af528eccb01aa9bced1d29783efd48c8c1c831cf111eea99", size = 36170, upload-time = "2026-01-15T09:51:33.681Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1a/07/60f79270a3320780be7e2ae8a1740cb98a692920b569ba420b97bcc6e175/fastapi_cloud_cli-0.11.0-py3-none-any.whl", hash = "sha256:76857b0f09d918acfcb50ade34682ba3b2079ca0c43fda10215de301f185a7f8", size = 26884, upload-time = "2026-01-15T09:51:34.471Z" },
+]
+
+[[package]]
+name = "fastapi-pagination"
+version = "0.15.10"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fastapi" },
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/09/36/4314836683bec1b33195bbaf2d74e1515cfcbb7e7ef5431ef515b864a5d0/fastapi_pagination-0.15.10.tar.gz", hash = "sha256:0ba7d4f795059a91a9e89358af129f2114876452c1defaf198ea8e3419e9a3cd", size = 575160, upload-time = "2026-02-08T13:13:40.312Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/91/95/cce73569317fdba138c315b980c39c6a035baa0ea5867d12276f1d312cff/fastapi_pagination-0.15.10-py3-none-any.whl", hash = "sha256:d50071ebc93b519391f16ff6c3ba9e3603bd659963fe6774ba2f4d5037e17fd8", size = 60798, upload-time = "2026-02-08T13:13:41.972Z" },
+]
+
+[package.optional-dependencies]
+sqlalchemy = [
+    { name = "sqlakeyset" },
+    { name = "sqlalchemy" },
 ]
 
 [[package]]
@@ -1010,6 +1032,18 @@ wheels = [
 ]
 
 [[package]]
+name = "python-dateutil"
+version = "2.9.0.post0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432, upload-time = "2024-03-01T18:36:20.211Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892, upload-time = "2024-03-01T18:36:18.57Z" },
+]
+
+[[package]]
 name = "python-dotenv"
 version = "1.2.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1191,6 +1225,15 @@ wheels = [
 ]
 
 [[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
 name = "slowapi"
 version = "0.1.9"
 source = { registry = "https://pypi.org/simple" }
@@ -1200,6 +1243,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a0/99/adfc7f94ca024736f061257d39118e1542bade7a52e86415a4c4ae92d8ff/slowapi-0.1.9.tar.gz", hash = "sha256:639192d0f1ca01b1c6d95bf6c71d794c3a9ee189855337b4821f7f457dddad77", size = 14028, upload-time = "2024-02-05T12:11:52.13Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2b/bb/f71c4b7d7e7eb3fc1e8c0458a8979b912f40b58002b9fbf37729b8cb464b/slowapi-0.1.9-py3-none-any.whl", hash = "sha256:cfad116cfb84ad9d763ee155c1e5c5cbf00b0d47399a769b227865f5df576e36", size = 14670, upload-time = "2024-02-05T12:11:50.898Z" },
+]
+
+[[package]]
+name = "sqlakeyset"
+version = "2.0.1762907931"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+    { name = "python-dateutil" },
+    { name = "sqlalchemy" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3e/42/53e772e4194da1eb3f3857769a6f556d9386ea3e8b3e8ccc27499f408e75/sqlakeyset-2.0.1762907931.tar.gz", hash = "sha256:80b1ab1d8813b7c91fd7b45de4448978be2cedb3c75fff3fd192b0f9cf91508d", size = 113872, upload-time = "2025-11-12T00:38:53.396Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6f/06/ee0374e12f225142fa843bf5963a32b377773b13184637bf8a7b6792d1ca/sqlakeyset-2.0.1762907931-py3-none-any.whl", hash = "sha256:3fda94510bfc63eded6dc064eb007343d9582c1605517d28651128381dbbb9ae", size = 27154, upload-time = "2025-11-12T00:38:52.416Z" },
 ]
 
 [[package]]
