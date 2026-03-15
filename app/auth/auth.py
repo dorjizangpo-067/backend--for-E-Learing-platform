@@ -46,7 +46,7 @@ async def register_user(
     if user_form.role == "admin" and user_form.email != settings.admin_email:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="You are not AdminYou are not authorized to create an Admin account.",
+            detail="You are not authorized to create an Admin account.",
         )
     # password hashing
     hash_password = func_hash_password(register_data.password)
