@@ -24,4 +24,4 @@ class UpdateCourseSchema(BaseModel):
     title: str | None = None
     description: str | None = None
     video_id: str | None = None
-    category_id: int | None = None
+    category: str | None = None

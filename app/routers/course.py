@@ -12,7 +12,6 @@ from ..dependencies import (
     is_teacher_or_admin,
 )
 from ..limiter import limiter
-from ..models.categories import Category
 from ..models.courses import Course
 from ..schemas.course import (
     CourseBaseSchema,
@@ -20,6 +19,7 @@ from ..schemas.course import (
     ReadCourseSchema,
     UpdateCourseSchema,
 )
+from .utils import category_check
 
 router = APIRouter(prefix="/courses", tags=["courses"])
 
@@ -51,21 +51,8 @@ async def create_course(
 ) -> dict:
     """Create a new course and assign it to the current user."""
 
-    stmt = select(Category).where(Category.name == course_in.category)
-    result = await db.execute(stmt)
-    category = result.scalar_one_or_none()
-
-    if not category:
-        categories_result = await db.execute(select(Category.name))
-        all_categories = categories_result.scalars().all()
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={
-                "error": f"Invalid category '{course_in.category}'",
-                "available_categories": all_categories,
-            },
-        )
-
+    # check category
+    category = await category_check(db=db, new_course=course_in)
     # Prepare data and exclude 'category' string to replace with 'category_id'
     course_data = course_in.model_dump(exclude={"category"})
     db_course = Course(
@@ -132,10 +119,16 @@ async def update_course(
             detail="You do not have permission to edit this course",
         )
 
+    # Prepare data and exclude 'category' string to replace with 'category_id'
+    update_data = course_update.model_dump(exclude_unset=True, exclude={"category"})
+
     # Apply partial updates
-    update_data = course_update.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(course, key, value)
+
+    if course_update.category is not None:
+        category = await category_check(db=db, new_course=course_update)
+        course.category_id = category.id
 
     db.add(course)
     await db.commit()
