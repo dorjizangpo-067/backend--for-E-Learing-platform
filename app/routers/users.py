@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
@@ -24,9 +24,25 @@ async def get_users(
     request: Request,  # for Limiter to perform
     db: Annotated[AsyncSession, Depends(get_db)],
     is_admin: Annotated[bool, Depends(is_admin)],
-    limit: Annotated[int, Query(le=25)] = 15,
     offset: int = 0,
 ) -> Page[UserReadSchema]:
     """get all users"""
     query = select(User)
     return await paginate(db, query)
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@limiter.limit("10/minute")
+async def delete_user(
+    request: Request,
+    id: int,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    is_admin: Annotated[bool, Depends(is_admin)],
+) -> None:
+    user = await db.get(User, id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    await db.delete(user)
+    await db.commit()
