@@ -5,7 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 
 from .env_loader import settings
 
-engine = create_async_engine(settings.postgresql_url)
+engine = create_async_engine(settings.database_url)
 
 
 class Base(DeclarativeBase):
