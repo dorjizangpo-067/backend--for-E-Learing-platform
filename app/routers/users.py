@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,7 +28,7 @@ async def get_users(
 ) -> Page[UserReadSchema]:
     """get all users"""
     query = select(User)
-    return await paginate(db, query)
+    return await apaginate(db, query)
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)

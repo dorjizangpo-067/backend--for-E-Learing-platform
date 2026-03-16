@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import apaginate
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,7 +33,7 @@ async def get_courses(
 ) -> Page[ReadCourseSchema]:
     """Retrieve a list of courses with pagination."""
     query = select(Course)
-    return await paginate(db, query)
+    return await apaginate(db, query)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
