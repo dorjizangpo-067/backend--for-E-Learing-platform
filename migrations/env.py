@@ -13,7 +13,10 @@ from app.models.users import User
 # access to the values within the .ini file in use.
 config = context.config
 
-sync_url = settings.postgresql_url.replace("postgresql+asyncpg://", "postgresql://")
+raw_url = settings.postgresql_url or settings.sqlite_url or ""
+sync_url = raw_url.replace("postgresql+asyncpg://", "postgresql://").replace(
+    "sqlite+aiosqlite://", "sqlite://"
+)
 config.set_main_option("sqlalchemy.url", sync_url)
 
 # Interpret the config file for Python logging.
