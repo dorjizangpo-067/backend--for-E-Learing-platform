@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import Response
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,15 +22,13 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 # reginster user
-@router.post(
-    "/register", response_model=UserReadSchema, status_code=status.HTTP_201_CREATED
-)
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 @limiter.limit("5/minute")
 async def register_user(
     request: Request,
     register_data: UserCreateSchema,
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> UserCreateSchema:
+) -> UserReadSchema:
     """
     User registration endpoint <br>
     """
@@ -53,7 +51,7 @@ async def register_user(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={"error": "User with this email already exists."},
         )
-    return UserCreateSchema.model_validate(user)
+    return UserReadSchema.model_validate(user)
 
 
 # login user
@@ -63,7 +61,7 @@ async def login_user(
     request: Request,
     login_data: UserLoginSchema,
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> JSONResponse:
+) -> Response:
     """
     User login endpoint <br>
     """
@@ -74,21 +72,17 @@ async def login_user(
 
 
 # Logout user
-@router.post("/logout", status_code=status.HTTP_200_OK)
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 @limiter.limit("5/minute")
 async def logout_user(
     request: Request,
-    # ensures only logged-in users can reach this code
     user_data: Annotated[dict, Depends(current_user_dependency)],
-) -> JSONResponse:
+) -> Response:
     """
     User logout endpoint.
     """
-    response = JSONResponse(
-        content={"message": f"Goodbye {user_data.get('name')}, successfully logged out"}
-    )
+    response = Response()
     response.delete_cookie(
         key="access_token", httponly=True, secure=True, samesite="lax"
     )
-    request.state.user = None
     return response

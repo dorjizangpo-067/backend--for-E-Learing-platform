@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import jwt
 from fastapi import HTTPException, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import Response
 from pwdlib import PasswordHash
 from pydantic import SecretStr
 from sqlalchemy import select
@@ -71,8 +71,8 @@ def create_user_token(user: User) -> str:
     )
 
 
-def build_login_response(token: str) -> JSONResponse:
-    response = JSONResponse(content={"message": "Successfully logged in"})
+def build_login_response(token: str) -> Response:
+    response = Response()
     response.set_cookie(
         key="access_token",
         value=token,

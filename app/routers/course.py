@@ -14,7 +14,6 @@ from ..dependencies import (
 from ..limiter import limiter
 from ..models.courses import Course
 from ..schemas.course import (
-    CourseBaseSchema,
     CreateCourseSchema,
     ReadCourseSchema,
     UpdateCourseSchema,
@@ -37,9 +36,7 @@ async def get_courses(
     return await paginate(db, query)
 
 
-@router.post(
-    "/", response_model=dict[str, CourseBaseSchema], status_code=status.HTTP_201_CREATED
-)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 @limiter.limit("3/second")
 @limiter.limit("100/hour")
 async def create_course(
@@ -48,11 +45,12 @@ async def create_course(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[dict, Depends(current_user_dependency)],
     is_authorized: Annotated[bool, Depends(is_teacher_or_admin)],
-) -> dict:
-    """Create a new course and assign it to the current user."""
+) -> ReadCourseSchema:
+    """Create a new course"""
 
     # check category
     category = await category_check(db=db, new_course=course_in)
+
     # Prepare data and exclude 'category' string to replace with 'category_id'
     course_data = course_in.model_dump(exclude={"category"})
     db_course = Course(
@@ -62,7 +60,7 @@ async def create_course(
     db.add(db_course)
     await db.commit()
     await db.refresh(db_course)
-    return {"courses": db_course}
+    return ReadCourseSchema.model_validate(db_course)
 
 
 @router.delete("/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -94,7 +92,7 @@ async def delete_course(
     return
 
 
-@router.patch("/{course_id}", response_model=dict[str, CourseBaseSchema])
+@router.patch("/{course_id}", status_code=status.HTTP_202_ACCEPTED)
 @limiter.limit("10/minute")  # Very strict
 async def update_course(
     request: Request,
@@ -103,7 +101,7 @@ async def update_course(
     db: Annotated[AsyncSession, Depends(get_db)],
     current_user: Annotated[dict, Depends(current_user_dependency)],
     is_authorized: Annotated[bool, Depends(is_teacher_or_admin)],
-) -> dict:
+) -> ReadCourseSchema:
     """Update a course by its ID."""
     course = await db.get(Course, course_id)
 
@@ -133,4 +131,4 @@ async def update_course(
     db.add(course)
     await db.commit()
     await db.refresh(course)
-    return {"course": course}
+    return ReadCourseSchema.model_validate(course)
