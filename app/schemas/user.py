@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, EmailStr, field_validator
+from fastapi import HTTPException, status
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 
 from ..env_loader import settings
 from ..models.users import User
@@ -19,7 +20,9 @@ class UserBaseSchema(BaseModel):
     def normalize_role(cls, value: str) -> str:
         value = value.strip().lower()
         if value not in {"student", "teacher", "admin"}:
-            raise ValueError("Invalid role")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role"
+            )
         return value
 
     @field_validator("email", mode="before")
@@ -42,7 +45,10 @@ class UserCreateSchema(UserBaseSchema):
 
     def validate_admin(self) -> bool:
         if self.role == "admin" and self.email != settings.admin_email:
-            raise ValueError("You are not authorized to create an Admin account.")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="You are not authorized to create an Admin account.",
+            )
         return True
 
 
@@ -56,6 +62,7 @@ class UserUpdateSchema(BaseModel):
 
 class UserReadSchema(UserBaseSchema):
     id: int
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserLoginSchema(BaseModel):

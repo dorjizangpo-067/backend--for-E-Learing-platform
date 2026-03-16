@@ -19,7 +19,7 @@ class Course(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(120), index=True)
     description: Mapped[str] = mapped_column(Text)
-    video_id: Mapped[str] = mapped_column(String)
+    course_url: Mapped[str] = mapped_column(String, nullable=True)
     created_date: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(UTC),

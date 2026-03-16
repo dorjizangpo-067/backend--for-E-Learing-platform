@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class CourseBaseSchema(BaseModel):
     title: str
     description: str | None = None
-    video_id: str
+    course_url: str
 
 
 class ReadCourseSchema(CourseBaseSchema):
@@ -23,5 +23,5 @@ class CreateCourseSchema(CourseBaseSchema):
 class UpdateCourseSchema(BaseModel):
     title: str | None = None
     description: str | None = None
-    video_id: str | None = None
     category: str | None = None
+    course_url: str | None = None
