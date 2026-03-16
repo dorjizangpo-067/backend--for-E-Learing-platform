@@ -7,4 +7,3 @@ instance
 database.db
 .venv/
 .ruff_cache/
-.*
