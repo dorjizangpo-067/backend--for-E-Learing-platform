@@ -10,9 +10,10 @@ async def test_register_user(client: AsyncClient, session: AsyncSession) -> None
         "email": "test@example.com",
         "password": "password123",
         "role": "student",
+        "bio": "",
     }
     response = await client.post("/auth/register", json=user_data)
-    assert response.status_code == 400
+    assert response.status_code == 201
 
 
 @pytest.mark.asyncio
@@ -24,6 +25,7 @@ async def test_register_existing_user(
         "email": "existing@example.com",
         "password": "password123",
         "role": "student",
+        "bio": "",
     }
     await client.post("/auth/register", json=user_data)
 
@@ -40,12 +42,13 @@ async def test_login_user(client: AsyncClient, session: AsyncSession) -> None:
         "email": "login@example.com",
         "password": "password123",
         "role": "student",
+        "bio": "",
     }
     await client.post("/auth/register", json=user_data)
 
     login_data = {"email": "login@example.com", "password": "password123"}
     response = await client.post("/auth/login", json=login_data)
-    assert response.status_code == 401
+    assert response.status_code == 200
 
 
 @pytest.mark.asyncio

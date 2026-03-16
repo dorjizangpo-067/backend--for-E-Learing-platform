@@ -42,15 +42,14 @@ async def test_create_course(
     course_data = {
         "title": "FastAPI Course",
         "description": "Learn FastAPI",
-        "video_id": "vid123",
+        "course_url": "vid123",
         "category": "Programming",
     }
 
     response = await client.post("/courses/", json=course_data, headers=auth_headers)
     assert response.status_code == 201
     data = response.json()
-    # The response wrapper is {"courses": ...} based on reading routers/course.py
-    assert data["courses"]["title"] == "FastAPI Course"
+    assert data["title"] == "FastAPI Course"
 
 
 @pytest.mark.asyncio
@@ -75,7 +74,7 @@ async def test_get_courses(
     course = Course(
         title="Intro",
         description="Desc",
-        video_id="v1",
+        course_url="v1",
         category_id=category.id,
         author_id=user.id,
     )
@@ -85,8 +84,8 @@ async def test_get_courses(
     response = await client.get("/courses/", headers=auth_headers)
     assert response.status_code == 200
     data = response.json()
-    assert len(data["courses"]) == 1
-    assert data["courses"][0]["title"] == "Intro"
+    assert len(data["items"]) == 1
+    assert data["items"][0]["title"] == "Intro"
 
 
 @pytest.mark.asyncio
@@ -110,7 +109,7 @@ async def test_delete_course(
     course = Course(
         title="To Delete",
         description="Desc",
-        video_id="del",
+        course_url="del",
         category_id=category.id,
         author_id=user.id,  # type: ignore
     )
@@ -129,7 +128,7 @@ async def test_create_course_invalid_category(
     course_data = {
         "title": "Bad Course",
         "description": "Desc",
-        "video_id": "vid",
+        "course_url": "vid",
         "category": "NonExistent",
     }
     # Need to create a category first? No, we want invalid.
@@ -169,7 +168,7 @@ async def test_delete_course_forbidden(
     course = Course(
         title="Other's Course",
         description="Desc",
-        video_id="v",
+        course_url="v",
         category_id=category.id,
         author_id=other_user.id,
     )
@@ -197,7 +196,7 @@ async def test_update_course(
     course = Course(
         title="Original",
         description="Desc",
-        video_id="vid",
+        course_url="vid",
         category_id=category.id,
         author_id=user.id,  # type: ignore
     )
@@ -242,7 +241,7 @@ async def test_update_course_forbidden(
     course = Course(
         title="Other's Course",
         description="Desc",
-        video_id="v",
+        course_url="v",
         category_id=category.id,
         author_id=other_user.id,
     )
